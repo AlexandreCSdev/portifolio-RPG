@@ -20,6 +20,9 @@
       "@typescript-eslint"
   ],
   "rules": {
+    "react/no-unknown-property": [
+      0
+    ],
     "react-hooks/exhaustive-deps": "off",
     "react-hooks/rules-of-hooks": "off",
     "indent": [
@@ -95,6 +98,7 @@
         "after": true
       }
     ],
+    "react/prop-types": [ 0 ],
     "no-console": "warn"
   }
 }
