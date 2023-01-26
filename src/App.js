@@ -7,6 +7,7 @@ import {
   Navigate
 } from 'react-router-dom';
 import { Room } from './pages/Room';
+import { Annotation } from './pages/Annotation';
 
 export function App() {
   return (
@@ -15,6 +16,7 @@ export function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Room />} />
+          <Route path="/annotation" element={<Annotation />} />
           <Route index path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>

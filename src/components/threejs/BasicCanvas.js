@@ -3,7 +3,7 @@ import { Physics } from '@react-three/cannon';
 import { CameraShake, KeyboardControls, OrbitControls, Center, PresentationControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 
-export function BasicCanvas({ children }) {
+export function BasicCanvas({ children, lockScene }) {
   const shakeVelocity = 0.04;
   const config = {
     maxYaw: shakeVelocity,
@@ -36,6 +36,7 @@ export function BasicCanvas({ children }) {
           position: 'fixed',
           top: 0,
           left: 0,
+          zIndex: -1,
         }}
       >
         <PresentationControls
@@ -44,6 +45,7 @@ export function BasicCanvas({ children }) {
           rotation={[0, -Math.PI / 4, 0]}
           polar={[0, Math.PI / 4]}
           azimuth={[-Math.PI / 4, Math.PI / 4]}
+          snap={ !lockScene }
         >
           <ambientLight intensity={ 0.2 } />
           <directionalLight color='white' intensity={0.7} position={[10, 100, 50]}/>

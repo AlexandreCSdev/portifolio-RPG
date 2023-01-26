@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BasicCanvas } from '../components/threejs/BasicCanvas';
 import { useLoader } from '@react-three/fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -6,9 +6,8 @@ import { EffectComposer, Selection, Outline } from '@react-three/postprocessing'
 import { Wardrob } from '../components/Wardrob';
 import { Player } from '../components/Player';
 import { AnnotationBoard } from '../components/AnnotationBoard';
+import { Menu } from '../components/Menu';
 
-//import AnnotationBoard from "../components/AnnotationBoard";
-// import Wardrob from "../components/Wardrob";
 // import { Cloud, Sky } from "@react-three/drei";
 
 function Floor() {
@@ -76,17 +75,27 @@ function Floor() {
 }
 
 export function Room() {
+  const [ lockScene, setLockScene ] = useState(false);
+
+  useEffect(() => {
+    setLockScene(lockScene);
+  }, [lockScene]);
+
   return (
-    <BasicCanvas>
-      <Selection >
-        <EffectComposer autoClear={ false }>
-          <Outline blur xRay visibleEdgeColor="white" edgeStrength={2000} width={1000} />
-        </EffectComposer>
-        <AnnotationBoard />
-      </Selection>
-      <Player />
-      <Wardrob />
-      <Floor />
-    </BasicCanvas>
+    <>
+      <Menu setLockScene={ setLockScene } />
+      <BasicCanvas lockScene={ lockScene } >
+        <Selection >
+          <EffectComposer autoClear={ false }>
+            <Outline blur xRay visibleEdgeColor="white" edgeStrength={2000} width={1000} />
+          </EffectComposer>
+          <AnnotationBoard />
+        </Selection>
+        
+        <Player />
+        <Wardrob />
+        <Floor />
+      </BasicCanvas>
+    </>
   );
 }
