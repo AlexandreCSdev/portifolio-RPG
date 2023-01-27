@@ -13,21 +13,25 @@ export function Annotation() {
   const [ postIts, setPostIts ] = useState(
     [{
       id: 1,
-      text: 'Bom dia!',
+      text: '\n Bom dia!',
       textAlign: 'left',
-      position: [-0.9, 0, -0.5 ],
+      position: [-90, 0, -5 ],
       color: 'yellow',
       textColor: 'black',
       fontSize: 20,
+      height: 150,
+      width: 200,
     }, 
     {
       id: 2,
-      text: 'sei la',
+      text: '\n sei la',
       textAlign: 'center',
-      position: [1.8, 0, 1.4 ],
+      position: [180, 0, 140 ],
       color: 'red',
       textColor: 'white',
       fontSize: 24,
+      height: 140,
+      width: 130,
     }]
   );
   const floorPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
@@ -50,10 +54,26 @@ export function Annotation() {
               style={{ 
                 width: '100vw',
                 height: '100vh',
-              }} 
+              }}
               shadows 
             >
-              <ambientLight intensity={1} />
+              <ambientLight intensity={0.2} />
+              <directionalLight
+                intensity={0.8}
+                castShadow
+                shadow-mapSize-height={1512}
+                shadow-mapSize-width={1512}
+                position={[ -20, 100, -10 ]}
+              />
+
+              <mesh
+                rotation={[-Math.PI / 2, 0, 0]}
+                position={[0, -0.1, 0]}
+                receiveShadow
+              >
+                <planeBufferGeometry attach="geometry" args={[1800, 1800]} receiveShadow />
+                <shadowMaterial />
+              </mesh>
 
               {
                 postIts.map(card => {
@@ -63,7 +83,7 @@ export function Annotation() {
                 })
               }
 
-              <OrthographicCamera makeDefault zoom={150} position={[0, 100, 0]} />
+              <OrthographicCamera makeDefault zoom={1} position={[0, 100, 0]} />
               <OrbitControls enabled={false} />
             </Canvas>
             
@@ -74,12 +94,14 @@ export function Annotation() {
                 onClick={() => setPostIts([
                   ...postIts, {
                     id: 'a',
-                    text: 'seu texto aqui!',
+                    text: '\n seu texto aqui!',
                     textAlign: 'center',
-                    position: [0, 0, 0 ],
-                    color: 'lightpink',
+                    position: [0, 0.1, 0 ],
+                    color: 'purple',
                     textColor: 'black',
-                    fontSize: 18,
+                    fontSize: 20,
+                    height: 140,
+                    width: 130,
                   }]
                 )}
               />

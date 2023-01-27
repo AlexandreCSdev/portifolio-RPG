@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { useDrag } from '@use-gesture/react';
 import { animated, useSpring } from '@react-spring/three';
 import { a } from '@react-spring/web';
@@ -20,6 +20,8 @@ export function Card({ setIsDragging, isDragging, floorPlane, card }) {
   const [ colorText, setColorText ] = useState(card.textColor);
   const [ fontSize, setFontSize ] = useState(card.fontSize);
   const [ text, setText ] = useState(card.text);
+  const divElement = useRef();
+
   const props = useSpring({
     opacity: focused['menu'] ? '1' : '0',
     height: focused['menu'] ? '120px' : '0',
@@ -76,6 +78,17 @@ export function Card({ setIsDragging, isDragging, floorPlane, card }) {
     setText(text);
   }, [text]);
 
+  useEffect(() => {
+    setText(text);
+  }, [text]);
+
+  useEffect(() => {
+    if (divElement.current) {
+      divElement.current.width = card.width;
+      divElement.current.height = card.height;
+    }
+  }, []);
+
   return (
     <animated.mesh 
       {...spring} 
@@ -87,34 +100,41 @@ export function Card({ setIsDragging, isDragging, floorPlane, card }) {
     > 
       <boxGeometry
         ref={dragObjectRef}
-        args={[1.3, 0.9, 0.9]}
+        args={[ divElement.current ? Number(divElement.current.style.width.split('px')[0]) + 40 :  Number(card.width) + 40, 1,  divElement.current ? Number(divElement.current.style.height.split('px')[0]) + 40 : Number(card.height) + 40]}
       />
       <meshPhongMaterial color={ color }/>
       <Html
         ref={dragObjectRef}
       >
-        <input 
-          type={'text'}
+        <textarea
+          ref={ divElement }
           style={{
             position: 'fixed',
-            top: '-50px',
-            left: '-77px',
-            width: '150px',
-            height: '95px',
+            top: divElement.current ? -Number(divElement.current.style.height.split('px')[0] / 2) + 'px' :  -(Number(card.height)) / 2,
+            left: divElement.current ? -Number(divElement.current.style.width.split('px')[0] / 2) + 'px' :  -(Number(card.width)) / 2,
             background: 'none',
+            overflowY: 'hidden',
+            overflowX: 'hidden',
             border: 'none',
+            width: divElement.current ? Number(divElement.current.style.width.split('px')[0]) + 'px' :  card.width + 'px',
+            height: divElement.current ? Number(divElement.current.style.height.split('px')[0]) + 'px' :  card.height + 'px',
             textAlign: textAlign,
             color: colorText,
             fontSize: fontSize+'px',
           }}
           value={ text }
-          onPointerOver = { () => setFocused(focused => ({ ...focused, ['input']: true })) }
-          onPointerOut = { () => setFocused(focused => ({ ...focused, ['input']: false })) }
-          onChange={ e => setText(e.target.value)}
+          onPointerOver={ () => setFocused(focused => ({ ...focused, ['input']: true })) }
+          onPointerOut={ () => setFocused(focused => ({ ...focused, ['input']: false })) }
+          onClick={ e => e.stopPropagation }
+          onChange={ e => setText(e.target.value) }
         />
         <PostItMenu 
           as={ a.div }
-          style={ props }
+          style={{ 
+            ...props, 
+            top: divElement.current ? -Number(divElement.current.style.height.split('px')[0] / 2 + 20) + 'px' :  card.height,
+            left: divElement.current ? Number(divElement.current.style.width.split('px')[0] / 2 + 20) + 'px' :  card.width,
+          }}
         >
           <IoIosArrowUp
             size={ 30 } 
@@ -209,8 +229,6 @@ const PostItMenu = styled.div`
   flex-direction: column;
   align-items: center;
   position: fixed;
-  top: -67px;
-  right: -150px;
   padding: 5px;
   border: solid 2px #432e06;
   border-radius: 8px;
@@ -220,10 +238,4 @@ const PostItMenu = styled.div`
   & div {
     margin-top: 4px;
   }
-`;
-
-const ColorPickerPosition = styled.div`
-  position: fixed;
-  top: -67px;
-  right: -145px;
 `;
